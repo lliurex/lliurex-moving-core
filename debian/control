@@ -2,8 +2,8 @@ Source: lliurex-moving-core
 Section: x11
 Priority: extra
 Maintainer: LliureX Team <lliurex@gva.es>
-Build-Depends: python-dev, debhelper (>= 7), cdbs, dh-python
-Standards-Version: 3.8.4
+Build-Depends: python-dev, debhelper (>= 10), cdbs, dh-python
+Standards-Version: 4.1.2
 XS-Python-Version: current
 
 Package: lliurex-moving-core
