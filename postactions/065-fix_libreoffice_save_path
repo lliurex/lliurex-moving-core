@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+
+import xml.etree.ElementTree as ET
+import os
+import shutil
+
+DEBUG=True
+
+def dprint(s):
+	
+	global DEBUG
+	if DEBUG:
+		print("[LibreOfficeParser] %s"%s)
+
+class LibreofficeParser:
+	
+	def __init__(self):
+		
+		self.conf_dir=os.path.expanduser("~/.config/libreoffice/4/user/")
+		self.skel_file="/usr/share/ubuntu-mate/settings-overlay/config/libreoffice/4/user/registrymodifications.xcu"
+		self.conf_file=self.conf_dir+"registrymodifications.xcu"
+		self.skel_line="<item oor:path=\"/org.openoffice.Office.Paths/Paths/org.openoffice.Office.Paths:NamedPath['Work']\"><prop oor:name=\"WritePath\" oor:op=\"fuse\"><value>$(home)/%s</value></prop></item>\n"
+		self.extra_lines="<item oor:path=\"/org.openoffice.Office.Common/Path/Current\"><prop oor:name=\"Work\" oor:op=\"fuse\"><value xsi:nil=\"true\"/></prop></item>\n\
+<item oor:path=\"/org.openoffice.Office.Common/Path/Info\"><prop oor:name=\"WorkPathChanged\" oor:op=\"fuse\"><value>true</value></prop></item>\n"
+
+	#def init
+	
+
+	def get_xdg_documents_dir(self):
+		
+		home=os.path.expanduser("~")
+		exec(open(home+"/.config/user-dirs.dirs").read())
+		documents_dir=locals()["XDG_DOCUMENTS_DIR"].split("/")[1]
+		return documents_dir
+		
+	#def get_xdg_documents_dir
+	
+	
+	def check_user_dir(self):
+		
+		if not os.path.exists(self.conf_dir):
+			dprint("Libreoffice path not found. Creating...")
+			os.makedirs(self.conf_dir)
+		
+		if not os.path.exists(self.conf_file):
+			dprint("Libreoffice conf file not found. Copying skel...")
+			shutil.copy(self.skel_file,self.conf_file)
+		
+	#def check_user_dir
+	
+	
+	def sanity_check(self,xml_path):
+		
+		try:
+			t=ET.parse(xml_path)
+			dprint("%s sanity check successful"%xml_path)
+			return True
+		except:
+			dprint("%s sanity check failed"%xml_path)
+			return False
+		
+	#def sanity_check
+	
+	
+	def update_default_save_location(self,f,forced=False):
+		
+		if not os.path.exists(f):
+			return False
+			
+		f=open(f)
+		lines=f.readlines()
+		f.close()
+		
+		found=False
+		count=0
+		for line in lines:
+			
+			if "WritePath" in line and "NamedPath['Work']" in line:
+				dprint("WritePath key found. Updating...")
+				found=True
+				line=self.skel_line%self.get_xdg_documents_dir()
+				lines[count]=line
+				break
+			count+=1
+		
+		count=0
+		if not found:
+			dprint("WritePath key NOT found. Updating file...")
+			for line in lines:
+				if line.startswith("<item "):
+					line=self.skel_line%self.get_xdg_documents_dir()+self.extra_lines+line
+					lines[count]=line
+					break
+				count+=1
+		
+		tmp_file="/tmp/.libreoffice_%s"%os.environ["USER"]
+		
+		f=open(tmp_file,"w")
+		f.writelines(lines)
+		f.close()
+		
+		if not self.sanity_check(tmp_file):
+			dprint("FAIL")
+			os.remove(tmp_file)
+			if not forced:
+				shutil.copy(self.skel_file,self.conf_file)
+				return self.update_default_save_location(f,True)
+			return False
+		
+		shutil.copy(tmp_file,self.conf_file)
+		os.remove(tmp_file)
+		dprint("SUCCESS")
+		return True
+		
+	#def update_default_save_location
+
+	
+	def main(self):
+		
+		try:
+			self.check_user_dir()
+			self.update_default_save_location(self.conf_file)
+		except Exception as e:
+			dprint("[!] Oops, something went wrong: [!]")
+			dprint(e)
+		
+	#def main
+	
+	
+#class LibreofficeParser
+
+if __name__=="__main__":
+	
+	lop=LibreofficeParser()
+	lop.main()
+	

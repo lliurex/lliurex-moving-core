@@ -1,0 +1,12 @@
+
+[Desktop Entry]
+Encoding=UTF-8
+Name=lliurex moving gnome
+Exec=/usr/bin/llx-moving-gnome
+TryExec=/usr/bin/llx-moving-gnome
+Terminal=false
+Type=Application
+X-GNOME-Autostart-Phase=Initialization
+
+Name=LliureX Gnome Profile Manager
+

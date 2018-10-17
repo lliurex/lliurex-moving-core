@@ -1,0 +1,281 @@
+#!/usr/bin/python
+
+import os
+import time
+import atexit
+import syslog
+import dbus
+from dbus.mainloop.glib import DBusGMainLoop
+import gi
+gi.require_version("Gtk","3.0")
+from gi.repository import Gtk,GObject,Gio
+import time
+
+import subprocess
+
+import net.Lliurex.Classroom.MovingProfiles
+import xmlrpclib
+
+
+def get_ticks():
+	millis = int(round(time.time() * 1000))
+	return millis
+	
+FD=None
+
+def get_ticks():
+	millis = int(round(time.time() * 1000))
+	return millis
+	
+def login1ManagerDBusIface():
+	# ###########################
+	#CONNECT TO DBUS  SHUTDOWN OR REBOOT SIGNAL
+	# ###########################
+	system_bus = dbus.SystemBus()
+	proxy = system_bus.get_object( 'org.freedesktop.login1','/org/freedesktop/login1' )
+	login1 = dbus.Interface( proxy, 'org.freedesktop.login1.Manager')
+	return login1
+
+#def
+
+def sleepShutdownInhibit():
+	# ###########################
+	#INHIBIT  SHUTDOWN OR REBOOT SIGNAL
+	# ###########################
+	login1 = login1ManagerDBusIface()
+	print "INHIBIT IS COMING................."
+	fd = login1.Inhibit( 'shutdown:sleep', 'Moving Profile', 'Saving your files...','delay' )
+	print "Inhibit has been  done well..........."
+	print "Inhibit is: %s" %fd
+	list=login1.ListInhibitors()
+	print "###############################"
+	print "LIST OF INHIBITORS IS:"
+	print "###############################"
+	print "%s" %list
+	return fd
+
+#def
+
+def take_lock():
+	global FD
+	print "LOCK IS DONE......"
+	FD = sleepShutdownInhibit()
+	print "Inhibit FD is: %s" %FD
+#def
+
+def remove_lock():
+	# ###########################
+	#LIBERAMOS LA SENYAL CERRANDO EL FICHERO
+	# ###########################
+	global FD
+	if FD:
+		print "REMOVE LOCK NOW............."
+		print "CLOSING FD is: %s" %FD
+		os.close( FD.take() )
+		FD = None
+#def
+
+class Service:
+	
+	
+	def __init__(self):
+		syslog.syslog("init")
+		
+		
+		self.server_name="server"
+
+		DBusGMainLoop(set_as_default=True)
+		
+		#BLOQUEAMOS LA SENYAL DE SHUTDOWN CON UN DELAY, PARA QUE ESPERE HA HACER EL SCRIPT CON UN TIEMPO MAXIMO DEFINIDO EN /etc/systemd/logind.conf
+		try:
+			take_lock()
+			atexit.register(remove_lock)
+			
+		except Exception as e:
+			syslog.syslog(e.message)
+				
+		self.session_bus = dbus.SessionBus()
+		
+		# ###########################
+		#CAPTURE SHUTDOWN OR REBOOT SIGNAL
+		# ###########################
+		try:
+			proxy2=login1ManagerDBusIface()
+			proxy2.connect_to_signal("PrepareForShutdown",self.on_shutdown)
+			
+		except Exception as e:
+			syslog.syslog(e.message)
+		
+		# ###########################
+		#CAPTURE END SESSION SIGNAL
+		# ###########################
+		proxy = self.session_bus.get_object('org.gnome.SessionManager','/org/gnome/SessionManager')
+		proxy=dbus.Interface(proxy,"org.gnome.SessionManager")
+		syslog.syslog("registering...")
+		d_id=os.getenv("DESKTOP_AUTOSTART_ID")
+		if d_id==None:
+			d_id="llx-moving-gnome"
+			
+		self.client_id=proxy.RegisterClient("llx-moving-gnome",d_id)
+		
+		syslog.syslog("Autostart ID "+str(d_id))
+		syslog.syslog("Client ID "+str(self.client_id))
+				
+		proxy = self.session_bus.get_object('org.gnome.SessionManager',self.client_id)
+		proxy=dbus.Interface(proxy,"org.gnome.SessionManager.ClientPrivate")
+		
+		proxy.connect_to_signal("QueryEndSession",self.on_query_end_session)
+		proxy.connect_to_signal("EndSession",self.on_end_session)
+		proxy.connect_to_signal("Stop",self.on_stop)
+		
+		
+		self.mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
+	
+
+		# LOAD IS NOW PERFORMED IN /etc/profile.d/
+
+		'''	
+
+		try:
+			t1=get_ticks()
+			self.mp.LoadSession()
+			t2=get_ticks()
+			self.load_dconf()
+			t3=get_ticks()
+			
+			syslog.syslog("profile load time:"+str(t2-t1)+" ms")
+			syslog.syslog("dconf load time:"+str(t3-t2)+" ms")
+			
+		except Exception as e:
+			syslog.syslog(e.message)
+
+		'''
+		
+		
+	#def
+	
+	
+	def on_shutdown(self,sender):
+		print "####################################"
+		print "SIGNAL SHUTDOWN CAPTURED..........."
+		print "####################################"
+		
+		self.on_end_session(None)
+		print "Session saved with moving profiles"
+		syslog.syslog("Session saved with moving profiles in shutdown or reboot")
+		print"------------------------------------"
+		print "3 seconds to shutdown......"
+		time.sleep(1)
+		print "2 seconds to shutdown......"
+		time.sleep(1)
+		print "1 seconds to shutdown......"
+		time.sleep(1)
+		print "SHUTDOWN......bye"
+		time.sleep(1)
+		remove_lock()
+		
+	#def 
+
+	def on_query_end_session(self,sender):
+		syslog.syslog("logout query")
+		proxy = self.session_bus.get_object('org.gnome.SessionManager',self.client_id)
+		proxy=dbus.Interface(proxy,"org.gnome.SessionManager.ClientPrivate")
+		proxy.EndSessionResponse(True,"saving session...")
+		
+	#def
+	
+	
+	def on_end_session(self,sender):
+		syslog.syslog("logout")
+		
+		try:
+			t1=get_ticks()
+			self.mp.SaveSession()
+			t2=get_ticks()
+			self.save_dconf()
+			t3=get_ticks()
+			
+			syslog.syslog("profile save time:"+str(t2-t1)+" ms")
+			syslog.syslog("dconf save time:"+str(t3-t2)+" ms")
+			
+		except Exception as e:
+			syslog.syslog(e.message)
+	
+		
+	
+		syslog.syslog("logout response")
+		proxy = self.session_bus.get_object('org.gnome.SessionManager',self.client_id)
+		proxy=dbus.Interface(proxy,"org.gnome.SessionManager.ClientPrivate")
+		proxy.EndSessionResponse(True,"unregistering")
+		
+		
+		syslog.syslog("terminating")
+		
+		proxy = self.session_bus.get_object('org.gnome.SessionManager',self.client_id)
+		proxy=dbus.Interface(proxy,"org.gnome.SessionManager.ClientPrivate")
+		proxy.EndSessionResponse(True,"Exiting session...")
+		
+	#def
+	
+	def on_stop(self):
+		
+		syslog.syslog("done")
+		Gtk.main_quit()
+		
+	#def on_stop
+
+	def load_dconf(self):
+		syslog.syslog("loading dconf")
+		dump_file = self.mp.GetProfilePath()+"/../.dconf.dump"
+		if os.path.exists(dump_file):
+			p=subprocess.Popen(["dconf","reset","-f","/"])
+			p.communicate()
+			
+			of = open(dump_file)
+			data = of.read()
+			of.close()
+			
+			p=subprocess.Popen(["dconf","load","/"],stdin=subprocess.PIPE)
+			p.communicate(data)
+			
+			p=subprocess.Popen(["dconf","update","/"],stdin=subprocess.PIPE)
+			p.communicate(data)
+			
+			c=xmlrpclib.ServerProxy("https://%s:9779"%(self.server_name))
+			try:
+				if c.is_frozen_user("","Golem",os.getenv("USER")):
+					os.system("dconf reset -f /")
+			except Exception as e:
+				syslog.syslog(e.message)
+			
+				
+			Gio.Settings.sync()
+		else:
+			syslog.syslog("no dconf dump found")
+		
+	#def
+	
+	def save_dconf(self):
+		syslog.syslog("dumping dconf data")
+		p=subprocess.Popen(["dconf","dump","/"],stdout=subprocess.PIPE)
+		stdout,stderr=p.communicate()
+		
+		of = open(self.mp.GetProfilePath()+"/../.dconf.dump","w")
+		of.write(stdout)
+		of.close()	
+	#def
+	
+
+if __name__=="__main__":
+
+	uid=os.getuid()
+	
+	if(uid<5000):
+		syslog.syslog("local user {0}, not using moving profiles".format(uid))
+	else:
+		ms = Service()
+		Gtk.main()
+		syslog.syslog("bye")
+	
+	
+	
