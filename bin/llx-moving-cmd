@@ -1,12 +1,16 @@
 #!/usr/bin/python
 
+import net.Lliurex.Classroom.MovingProfiles
+
 import sys
 import os
 import shutil
-import net.Lliurex.Classroom.MovingProfiles
+import logging
+
+logging.basicConfig(format='%(levelname)s %(funcName)s %(message)s',level=logging.INFO)
 
 
-def print_usage():
+def printUsage():
 
 	print("")
 	print("Usage: llx-moving-cmd <command>")
@@ -24,201 +28,196 @@ def print_usage():
 
 def main():
 
-	ret=0
+	try:
 
-	if (len(sys.argv)<2):
-		print_usage()
-	else:
-		if(sys.argv[1]=="load"):
-			try:
+		if (len(sys.argv)<2):
+			printUsage()
+		else:
+			if(sys.argv[1]=="load"):
 				mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
 				mp.LoadSession()
-			except:
-				#Ignore for now
-				pass
-			
-			
-		elif(sys.argv[1]=="save"):
-			mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
-			mp.SaveSession()
-			
-		elif(sys.argv[1]=="show"):
-			mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
-			
-			print("Include:")
-			for name in mp.cfg["include"]:
-				value=mp.cfg["include"][name]
-				tab=" "*(32-len(name))
-				print("* "+name+tab+"["+value+"]")
 				
-			print("")
-			print("Exclude:")
-			for name in mp.cfg["exclude"]:
-				value=mp.cfg["exclude"][name]
-				tab=" "*(32-len(name))
-				print("* "+name+tab+"["+value+"]")
-			
-		elif(sys.argv[1]=="match"):	
-			mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
-			
-			home=os.path.expanduser("~")
-			
-			print("Matched files:")
-			
-			for fname in os.listdir(home):
-				if(mp.Match(fname)):
-					print("->"+fname)
-			
-		elif(sys.argv[1]=="test" and len(sys.argv)>2):
-			if(sys.argv[2]=="load"):
+			elif(sys.argv[1]=="save"):
 				mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
+				mp.SaveSession()
+				
+			elif(sys.argv[1]=="show"):
+				mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
+				
+				print("Include:")
+				for name in mp.cfg["include"]:
+					value=mp.cfg["include"][name]
+					tab=" "*(32-len(name))
+					print("* "+name+tab+"["+value+"]")
+					
+				print("")
+				print("Exclude:")
+				for name in mp.cfg["exclude"]:
+					value=mp.cfg["exclude"][name]
+					tab=" "*(32-len(name))
+					print("* "+name+tab+"["+value+"]")
+				
+			elif(sys.argv[1]=="match"):	
+				mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
+				
 				home=os.path.expanduser("~")
-				moving_path=mp.GetProfilePath()
 				
-				profile_files=os.listdir(moving_path)
-				
-				update_files=[]
-				delete_files=[]
-				append_files=[]
+				print("Matched files:")
 				
 				for fname in os.listdir(home):
-					if mp.Match(fname):
-						if fname not in profile_files:
-							delete_files.append(fname)
-						else:
-							update_files.append(fname)
-
-				home_files=os.listdir(home)
-			
-				for fname in profile_files:
 					if(mp.Match(fname)):
-						if (not fname in home_files):
-							append_files.append(fname)
+						print("->"+fname)
+				
+			elif(sys.argv[1]=="test" and len(sys.argv)>2):
+				if(sys.argv[2]=="load"):
+					mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
+					home=os.path.expanduser("~")
+					moving_path=mp.GetProfilePath()
 					
-							
-				print("Local files updated:")
-				
-				for fname in update_files:
-					print("->"+fname)
+					profile_files=os.listdir(moving_path)
 					
-				print("Local files deleted:")
-				
-				for fname in delete_files:
-					print("->"+fname)
-				
-				print("Local files appended:")
+					update_files=[]
+					delete_files=[]
+					append_files=[]
+					
+					for fname in os.listdir(home):
+						if mp.Match(fname):
+							if fname not in profile_files:
+								delete_files.append(fname)
+							else:
+								update_files.append(fname)
 
-				for fname in append_files:
-					print("->"+fname)				
-
-
-			elif(sys.argv[2]=="save"):
-				mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
-				home=os.path.expanduser("~")
-				moving_path=mp.GetProfilePath()
+					home_files=os.listdir(home)
 				
-				home_files=os.listdir(home)
-				
-				update_files=[]
-				delete_files=[]
-				append_files=[]
-				
-				for fname in os.listdir(moving_path):
-					if not fname in home_files:
-						delete_files.append(fname)
-					else:
+					for fname in profile_files:
 						if(mp.Match(fname)):
-							update_files.append(fname)
-						else:
-							delete_files.append(fname)
-
-				profile_files=os.listdir(moving_path)
-				for fname in home_files:
-					if (mp.Match(fname)):
-						if not fname in profile_files:
-							append_files.append(fname)
-
-
-				print("Remote files updated:")
-				
-				for fname in update_files:
-					print("->"+fname)
-					
-				print("Remote files deleted:")
-				
-				for fname in delete_files:
-					print("->"+fname)
-
-				print("Remote files appended:")
-				
-				for fname in append_files:
-					print("->"+fname)
-				
-				
-			
-			else:
-				print_usage()
-				
-		elif(sys.argv[1]=="purge" and len(sys.argv)>2):
-		
-			if(sys.argv[2]=="local"):
-				mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
-				home=os.path.expanduser("~")
+							if (not fname in home_files):
+								append_files.append(fname)
+						
 								
-				print("Removing local files:")
+					print("Local files updated:")
+					
+					for fname in update_files:
+						print("->"+fname)
+						
+					print("Local files deleted:")
+					
+					for fname in delete_files:
+						print("->"+fname)
+					
+					print("Local files appended:")
+
+					for fname in append_files:
+						print("->"+fname)				
+
+
+				elif(sys.argv[2]=="save"):
+					mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
+					home=os.path.expanduser("~")
+					moving_path=mp.GetProfilePath()
+					
+					home_files=os.listdir(home)
+					
+					update_files=[]
+					delete_files=[]
+					append_files=[]
+					
+					for fname in os.listdir(moving_path):
+						if not fname in home_files:
+							delete_files.append(fname)
+						else:
+							if(mp.Match(fname)):
+								update_files.append(fname)
+							else:
+								delete_files.append(fname)
+
+					profile_files=os.listdir(moving_path)
+					for fname in home_files:
+						if (mp.Match(fname)):
+							if not fname in profile_files:
+								append_files.append(fname)
+
+
+					print("Remote files updated:")
+					
+					for fname in update_files:
+						print("->"+fname)
+						
+					print("Remote files deleted:")
+					
+					for fname in delete_files:
+						print("->"+fname)
+
+					print("Remote files appended:")
+					
+					for fname in append_files:
+						print("->"+fname)
+					
+				else:
+					printUsage()
+					
+			elif(sys.argv[1]=="purge" and len(sys.argv)>2):
 			
-				for fname in os.listdir(home):
-					if(mp.Match(fname)):
-						fpath = home+os.path.sep+fname
+				if(sys.argv[2]=="local"):
+					mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
+					home=os.path.expanduser("~")
+									
+					logging.info("Removing local files:")
 				
-						print("-> "+fpath)				
+					for fname in os.listdir(home):
+						if(mp.Match(fname)):
+							fpath = home+os.path.sep+fname
+					
+							logging.info("-> "+fpath)
+					
+							if(os.path.isdir(fpath)):
+								shutil.rmtree(fpath)
+					
+							if(os.path.isfile(fpath)):
+								os.remove(fpath)
+			
+					logging.info("done")
 				
+				elif(sys.argv[2]=="remote"):
+					mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
+					moving_path=mp.GetProfilePath()
+					
+					profile_files=os.listdir(moving_path)
+
+					logging.info("Removing remote files:")
+				
+					for fname in profile_files:
+						fpath = moving_path+os.path.sep+fname
+					
+						logging.info("-> "+fpath)
+					
 						if(os.path.isdir(fpath)):
 							shutil.rmtree(fpath)
-				
+					
 						if(os.path.isfile(fpath)):
 							os.remove(fpath)
-		
-				print("done")
 			
-			elif(sys.argv[2]=="remote"):
+					logging.info("done")
+				
+				else:
+					printUsage()
+			
+			elif(sys.argv[1]=="backup" and len(sys.argv)>2):
 				mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
-				moving_path=mp.GetProfilePath()
-				
-				profile_files=os.listdir(moving_path)
+				mp.Backup(sys.argv[2])
 
-				print("Removing remote files:")
-			
-				for fname in profile_files:
-					fpath = moving_path+os.path.sep+fname
-				
-					print("-> "+fpath)				
-				
-					if(os.path.isdir(fpath)):
-						shutil.rmtree(fpath)
-				
-					if(os.path.isfile(fpath)):
-						os.remove(fpath)
-		
-				print("done")
-			
+			elif(sys.argv[1]=="help"):
+				printUsage()
 			else:
-				print_usage()
-		
-		elif(sys.argv[1]=="backup" and len(sys.argv)>2):
-			mp = net.Lliurex.Classroom.MovingProfiles.MovingProfiles("")
-			mp.Backup(sys.argv[2])	
-
-		elif(sys.argv[1]=="help"):
-			print_usage()
-		else:
-			print("Unknown command :"+sys.argv[1])
-			print_usage()
-			ret=1 #exit with error status
+				logging.warning("Unknown command :"+sys.argv[1])
 	
-			
-			
-	sys.exit(ret)
+	except Exception as ex:
+		logging.exception(ex)
+		#exit gracefully even when something goes bad
+		sys.exit(0)
+	
+	
+	sys.exit(0)
 
 
 if __name__=="__main__":
