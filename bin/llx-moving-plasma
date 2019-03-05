@@ -1,0 +1,74 @@
+#!/usr/bin/python3
+
+
+import os
+import sys
+import time
+import syslog
+import dbus
+from dbus.mainloop.glib import DBusGMainLoop
+from gi.repository import GLib
+
+SIGTERM = 15 # term signal constant
+LOCAL_UID=500
+
+class Service:
+    
+    def __init__(self):
+        self.loop = None # glib loop
+        self.lock_fd = None
+
+        # connect to SIGTERM
+        # glib loop seems to mess with python signal lib
+        GLib.unix_signal_add(GLib.PRIORITY_HIGH, 
+                SIGTERM, 
+                self.on_sigterm
+                )
+        
+        self.inhibit_shutdown()
+
+
+    def on_sigterm(self):
+        # hook to SIGTERM signal
+        syslog.syslog("SIGTERM")
+        syslog.syslog("saving files...")
+        begin = time.time()
+        time.sleep(6)
+        end = time.time()
+        
+        syslog.syslog("done in {0} seconds".format(end-begin))
+        self.release_inhibition()
+        self.loop.quit()
+
+    def inhibit_shutdown(self):
+        # inhibit system shutdown using logind framework
+
+        system_bus = dbus.SystemBus()
+        proxy = system_bus.get_object( 'org.freedesktop.login1','/org/freedesktop/login1' )
+        login1 = dbus.Interface( proxy, 'org.freedesktop.login1.Manager')
+        self.lock_fd = login1.Inhibit( 'shutdown:sleep', 'Moving Profiles', 'Saving session','delay' )
+        syslog.syslog("Inhibition lock: {0}".format(self.lock_fd))
+        
+        
+    def release_inhibition(self):
+        os.close(self.lock_fd.take())
+    
+    def run(self):
+        syslog.syslog("entering loop")
+        self.loop = GLib.MainLoop()
+        self.loop.run()
+
+if __name__=="__main__":
+    
+    uid=os.getuid()
+    
+    if (uid<LOCAL_UID):
+        syslog.syslog("local user {0}, not using moving profiles".format(uid))
+        
+    else:
+        service=Service()
+        service.run()
+        
+        
+       
+
