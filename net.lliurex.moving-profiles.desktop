@@ -1,0 +1,10 @@
+
+[Desktop Entry]
+Encoding=UTF-8
+Name=LliureX moving profiles plasma service
+Exec=/usr/bin/llx-moving-plasma
+TryExec=/usr/bin/llx-moving-plasma
+Terminal=false
+Type=Application
+X-KDE-autostart-phase=0
+
