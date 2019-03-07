@@ -10,7 +10,7 @@ from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository import GLib
 
 SIGTERM = 15 # term signal constant
-LOCAL_UID=500
+LOCAL_UID=1041
 
 class Service:
     
