@@ -5,6 +5,7 @@ import commands
 import subprocess
 import shutil
 import glob
+import logging
 
 import xmlrpclib
 
@@ -14,10 +15,10 @@ import gettext
 locale.textdomain("xdg-user-dirs")
 gettext.textdomain("xdg-user-dirs")
 
+logging.basicConfig(format='%(levelname)s %(funcName)s %(message)s',level=logging.INFO)
 
 class MovingProfiles:
 	
-		
 	
 	def __init__(self,login,port=9779):
 	
@@ -31,7 +32,7 @@ class MovingProfiles:
 		self.connection_string = "https://"+server_name+":"+server_port
 		proxy = xmlrpclib.ServerProxy(self.connection_string)
 				
-		#perform a cached read				
+		#perform a cached read
 		self.cfg = proxy.get_list(login,"MovingProfiles")
 		
 
@@ -130,9 +131,8 @@ class MovingProfiles:
 				moving_profiles = "/home/%s/%s/.moving_profiles/"%(user,documents)
 				
 			except:
-				print ("[GetProfilePath] Failed constructing home path")
-				raise
-		
+				raise RuntimeError("Failed to construct home path")
+
 
 		return moving_profiles
 		
@@ -142,8 +142,8 @@ class MovingProfiles:
 		path="/usr/share/lliurex-moving-core/postactions/"
 		
 		for f in sorted(glob.glob(path+"*")):
-			print("* Executing %s ..."%f)
-			os.system(f + " || true")		
+			logging.info("* Executing %s ..."%f)
+			os.system(f + " || true")
 		
 	#def FinalActions
 
@@ -155,26 +155,27 @@ class MovingProfiles:
 		if not os.path.exists(moving_path):
 			# at least execute final actions before exiting
 			self.FinalActions()
-			raise Exception("Profile dir not found, aborting load")
+			raise RuntimeError("Profile dir not found, aborting load")
 			
 			
-		print("[LoadSession] Synchronization")
-		print("[LoadSession] Stage 1")
+		logging.info("Synchronization")
+		logging.info("Stage 1")
 		
 		
 		cmd=["rsync","-aAX","--delete","--ignore-errors"]
+		logging.debug("rsync cmd:"+str(cmd))
 		
 		profile_files=self.MatchFolder(moving_path)
 		
 		for fname in profile_files:
-			print("[rsync] "+fname)
+			logging.info("[rsync] "+fname)
 
 			ecmd=[]
 			if(fname in self.ignore):
 				elist=self.ignore[fname]
 				for erule in elist:
 					ecmd.append("--exclude=%s"%erule)
-					print("* excluding: "+erule)
+					logging.info("* excluding: "+erule)
 					
 			
 			source = '%s/%s'%(moving_path,fname)
@@ -195,7 +196,7 @@ class MovingProfiles:
 			
 		
 
-		print("[LoadSession] Stage 2")
+		logging.info("Stage 2")
 
 		home_files = self.MatchFolder(home)
 		
@@ -203,7 +204,7 @@ class MovingProfiles:
 			if not hname in profile_files:
 				hpath=home+"/"+hname
 				
-				print("[rm] "+hname)
+				logging.info("[rm] "+hname)
 				
 				rm=os.remove
 				
@@ -213,17 +214,17 @@ class MovingProfiles:
 				rm(hpath)
 
 		# Stage 3
-		print("[LoadSession] Stage 3")
+		logging.info("Stage 3")
 		self.FinalActions()
 
 
 
 	def SaveSession(self):
 		moving_path=self.GetProfilePath()
-		print("[SaveSession] moving path: "+moving_path)
+		logging.info("Moving path: "+moving_path)
 		
 		if not os.path.exists(moving_path):
-			print("[SaveSession] Creating profile path")
+			logging.info("Creating profile path")
 			try:
 				os.makedirs(moving_path)
 			except:
@@ -232,16 +233,11 @@ class MovingProfiles:
 				
 		
 		cmd=["rsync","-aAX","--delete","--ignore-errors"]
-		
-		
-
-		print("rsync cmd:")
-		for c in cmd:
-			print(c)
+		logging.debug("rsync cmd:"+str(cmd))
 		
 		home=os.path.expanduser("~")
-		print("[SaveSession] Synchronization")
-		print("[SaveSession] Stage 1")
+		logging.info("Synchronization")
+		logging.info("Stage 1")
 		
 		home_files = self.MatchFolder(home)
 		for fname in home_files:
@@ -250,7 +246,7 @@ class MovingProfiles:
 			if(os.path.isdir(fpath)):
 				fpath=fpath+"/"
 			
-			print("[rsync] "+fname)
+			logging.info("[rsync] "+fname)
 
 			ecmd = []
 
@@ -258,8 +254,7 @@ class MovingProfiles:
 				elist = self.ignore[fname]
 				for erule in elist:
 					ecmd.append("--exclude=%s"%erule)
-					print("* excluding: "+erule)		
-
+					logging.info("* excluding: "+erule)	
 
 			source = home +"/" + fname
 			destination = moving_path+"/"+fname
@@ -274,16 +269,15 @@ class MovingProfiles:
 			rcmd = cmd + ecmd + [source,destination]
 			plain_cmd = " ".join(rcmd)
 			subprocess.call(plain_cmd,shell=True)
-		
-					
 			
-		print("[SaveSession] Stage 2")
+			
+		logging.info("Stage 2")
 		
 		for fname in os.listdir(moving_path):
 			if not fname in home_files:
 				fpath=moving_path+"/"+fname
 				
-				print("[rm] "+fname)
+				logging.info("[rm] "+fname)
 				
 				rm=os.remove
 
@@ -297,27 +291,24 @@ class MovingProfiles:
 	def Backup(self,name):
 		backup_path=self.GetProfilePath()+"../.moving_profiles_backup/"+name
 		
-		print("[Backup] backup path: "+backup_path)
+		logging.info ("Backup path: "+backup_path)
 		
 		if(os.path.exists(backup_path)):
-			print("[Backup] "+name+" already exists")
+			logging.warning(name+" already exists")
 			return
 		else:
 			try:
 				os.makedirs(backup_path)
 			except:
-				raise
+				raise RuntimeError("Cannot create backup path")
 			
 			
-		
 		cmd=["rsync","-az","--delete"]
-		
-		
+		logging.debug("rsync cmd:"+str(cmd))
 		
 		home=os.path.expanduser("~")
 		
-		print("[Backup] Backing up as "+name)
-
+		logging.info("Backing up as "+name)
 		
 		home_files = self.MatchFolder(home)
 		for fname in home_files:
@@ -326,8 +317,8 @@ class MovingProfiles:
 			if(os.path.isdir(fpath)):
 				fpath=fpath+"/"
 			
-			print("[rsync] "+fname)
+			logging.info("[rsync] "+fname)
 			
-			rcmd = cmd + [fpath, backup_path+"/"+fname ]			
-			subprocess.call(rcmd)	
+			rcmd = cmd + [fpath, backup_path+"/"+fname ]	
+			subprocess.call(rcmd)
 
