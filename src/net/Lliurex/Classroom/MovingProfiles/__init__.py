@@ -1,7 +1,6 @@
 import re
 import fnmatch
 import os
-import commands
 import subprocess
 import shutil
 import glob
