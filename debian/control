@@ -9,9 +9,6 @@ XS-Python-Version: current
 Package: lliurex-moving-core
 Architecture: all
 XB-Python-Version: ${python:Versions}
-Depends: libc6, python
-Conflicts: lliurex-moving-gnome
-Replaces: lliurex-moving-gnome
-Provides: lliurex-moving-gnome
+Depends: libc6, python, rsync
 Description: Lliurex moving profile manager
  LliureX Moving core files
