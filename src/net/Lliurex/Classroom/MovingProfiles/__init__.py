@@ -6,7 +6,7 @@ import shutil
 import glob
 import logging
 
-import xmlrpclib
+import xmlrpc.client
 
 import locale
 import gettext
@@ -29,7 +29,7 @@ class MovingProfiles:
 		server_name="server"
 		
 		self.connection_string = "https://"+server_name+":"+server_port
-		proxy = xmlrpclib.ServerProxy(self.connection_string)
+		proxy = xmlrpc.client.ServerProxy(self.connection_string)
 				
 		#perform a cached read
 		self.cfg = proxy.get_list(login,"MovingProfiles")
@@ -108,7 +108,7 @@ class MovingProfiles:
 			
 		
 	def Save(self):
-		proxy = xmlrpclib.ServerProxy(self.connection_string)	
+		proxy = xmlrpc.client.ServerProxy(self.connection_string)	
 		proxy.save_conf(self.login,"MovingProfiles",self.cfg)
 
 
