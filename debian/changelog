@@ -1,3 +1,9 @@
+lliurex-moving-core (4.1.5) bionic; urgency=medium
+
+  * Master tag: 5c30fed3425a813baa9d76fa0d2a3c625c01b6d1 
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Mon, 11 Mar 2019 11:36:46 +0100
+
 lliurex-moving-core (4.1.4) bionic; urgency=medium
 
   * Modified to work with KDE Plasma desktop
