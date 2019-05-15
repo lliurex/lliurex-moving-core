@@ -14,8 +14,9 @@ setup(  name             = "Lliurex-moving-core",
         url              = "http://lliurex.net/home/",
         package_dir      = {'': 'src'},
         packages         = ['net','net.Lliurex','net.Lliurex.Classroom','net.Lliurex.Classroom.MovingProfiles'],
-        data_files       = [("/usr/bin/",["bin/llx-moving-cmd","bin/llx-moving-plasma"]),("/etc/X11/Xsession.d/",["Xsession.d/95lliurex-moving"]),
-                                 ("/etc/systemd/logind.conf.d/",["logind.conf.d/net.lliurex.moving-profiles.conf"]),("/etc/xdg/autostart/",["net.lliurex.moving-profiles.desktop"]),
+        data_files       = [("/usr/bin/",["bin/llx-moving-cmd","bin/llx-moving-service"]),
+                                 ("/etc/systemd/user/",["moving-profiles.service"]),
+                                 ("/etc/systemd/logind.conf.d/",["logind.conf.d/net.lliurex.moving-profiles.conf"]),
                                  ("/usr/share/lliurex-moving-core/postactions/",["postactions/050-whiskermenu.sh","postactions/060-remove_libreoffice_lock.sh","postactions/065-fix_libreoffice_save_path","postactions/070-remove_firefox_lock.sh"])]
      )
 

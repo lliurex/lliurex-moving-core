@@ -1,0 +1,10 @@
+[Unit]
+Description=LliureX moving profiles
+ConditionUser=!@system
+
+[Service]
+ExecStart=/usr/bin/llx-moving-service load
+ExecStop=/usr/bin/llx-moving-service save
+
+[Install]
+WantedBy = default.target
