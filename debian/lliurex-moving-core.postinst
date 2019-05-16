@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+        systemctl --global enable moving-profiles.service
+    ;;
+    remove)
+        systemctl --global disable moving-profiles.service
+    ;;
+    
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        exit 1
+    ;;
+esac
+
+#DEBHELPER#

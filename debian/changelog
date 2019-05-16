@@ -1,3 +1,10 @@
+lliurex-moving-core (4.2.0.0) bionic; urgency=medium
+
+  * Master tag: 7b3e173778df3e7014c477e9be33f4128a1646e7
+  * Moved to systemd user service and removed any plasma or X11 dependency
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Thu, 16 May 2019 15:34:55 +0200
+
 lliurex-moving-core (4.1.5) bionic; urgency=medium
 
   * Master tag: 5c30fed3425a813baa9d76fa0d2a3c625c01b6d1 
