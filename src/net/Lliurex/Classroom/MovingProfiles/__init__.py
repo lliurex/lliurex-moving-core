@@ -7,6 +7,7 @@ import glob
 import logging
 
 import xmlrpc.client
+import ssl
 
 import locale
 import gettext
@@ -29,7 +30,8 @@ class MovingProfiles:
 		server_name="server"
 		
 		self.connection_string = "https://"+server_name+":"+server_port
-		proxy = xmlrpc.client.ServerProxy(self.connection_string)
+		context=ssl._create_unverified_context()
+		proxy = xmlrpc.client.ServerProxy(self.connection_string,context=context)
 				
 		#perform a cached read
 		self.cfg = proxy.get_list(login,"MovingProfiles")
