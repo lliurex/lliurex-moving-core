@@ -1,6 +1,7 @@
 [Unit]
 Description=LliureX moving profiles
 ConditionUser=!@system
+After=umounter.service
 
 [Service]
 ExecStart=/usr/bin/llx-moving-service load
