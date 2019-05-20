@@ -1,4 +1,4 @@
-lliurex-moving-core (4.2.0.1) bionic; urgency=medium
+lliurex-moving-core (4.2.1.0) bionic; urgency=medium
 
   * Fixed missing context in xmlrpc client
   * Added After=umounter.service dependency in systemd unit
