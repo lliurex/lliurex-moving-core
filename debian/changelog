@@ -1,3 +1,10 @@
+lliurex-moving-core (4.2.0.1) bionic; urgency=medium
+
+  * Fixed missing context in xmlrpc client
+  * Added After=umounter.service dependency in systemd unit
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 20 May 2019 16:16:42 +0200
+
 lliurex-moving-core (4.2.0.0) bionic; urgency=medium
 
   * Master tag: 7b3e173778df3e7014c477e9be33f4128a1646e7
