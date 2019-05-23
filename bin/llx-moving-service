@@ -2,7 +2,8 @@
 
 
 load_session() {
-    if [ "$XDG_CURRENT_DESKTOP" != "" ]; then
+    # currently we are not supporting other desktop environments
+    if [ "$XDG_CURRENT_DESKTOP" != "KDE" ]; then
         if [ "$UID" -gt "1041" ]; then  
             RC=0
             RET=$(n4d-client -h server -m is_frozen_user -c Golem -a $USER 2>/dev/null || echo False)
