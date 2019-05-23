@@ -1,3 +1,10 @@
+lliurex-moving-core (4.2.2.0) bionic; urgency=low
+
+  * Master tag: 75605926f6fbf6efd1e9cc3ce3b02447993c52db
+  * Back to x11+plasma as load/save checkpoints
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Thu, 23 May 2019 13:34:22 +0200
+
 lliurex-moving-core (4.2.1.0) bionic; urgency=medium
 
   * Fixed missing context in xmlrpc client

@@ -9,6 +9,6 @@ XS-Python-Version: current
 Package: lliurex-moving-core
 Architecture: all
 XB-Python-Version: ${python:Versions}
-Depends: python3, rsync
+Depends: python3, rsync, lliurex-desktop-defaults
 Description: Lliurex moving profile manager
  LliureX Moving core files
