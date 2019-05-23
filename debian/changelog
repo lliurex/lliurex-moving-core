@@ -1,3 +1,10 @@
+lliurex-moving-core (4.2.4.0) bionic; urgency=medium
+
+  * Master tag: a48ad22c47f899cd2de189aef168fd2178737f3b
+  * Script moved from sh to bash
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Thu, 23 May 2019 16:12:20 +0200
+
 lliurex-moving-core (4.2.3.0) bionic; urgency=low
 
   * Master tag: 2f3e98644df16aadd8a32425c4d1920fcdf567cf
