@@ -1,6 +1,6 @@
-lliurex-moving-core (4.2.2.0) bionic; urgency=low
+lliurex-moving-core (4.2.3.0) bionic; urgency=low
 
-  * Master tag: 75605926f6fbf6efd1e9cc3ce3b02447993c52db
+  * Master tag: 2f3e98644df16aadd8a32425c4d1920fcdf567cf
   * Back to x11+plasma as load/save checkpoints
 
  -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Thu, 23 May 2019 13:34:22 +0200
