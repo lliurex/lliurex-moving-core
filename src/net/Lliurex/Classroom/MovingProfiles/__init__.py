@@ -120,7 +120,7 @@ class MovingProfiles:
 		try:
 			
 			home=os.path.expanduser("~")
-			execfile(home+"/.config/user-dirs.dirs")
+			exec(open(home+"/.config/user-dirs.dirs").read())
 			documents_dir=locals()["XDG_DOCUMENTS_DIR"].split("/")[1]
 			moving_profiles="%s/%s/.moving_profiles/"%(home,documents_dir)
 			
