@@ -1,3 +1,9 @@
+lliurex-moving-core (4.2.5) bionic; urgency=medium
+
+  * Fixed execfile, no longer supported  on python3
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 23 Jul 2019 13:41:48 +0200
+
 lliurex-moving-core (4.2.4.0) bionic; urgency=medium
 
   * Master tag: a48ad22c47f899cd2de189aef168fd2178737f3b
