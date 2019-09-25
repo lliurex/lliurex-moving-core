@@ -102,9 +102,12 @@ class LibreofficeParser:
 		if not self.sanity_check(tmp_file):
 			dprint("FAIL")
 			os.remove(tmp_file)
-			if not forced:
-				shutil.copy(self.skel_file,self.conf_file)
-				return self.update_default_save_location(f,True)
+			if forced:
+				if os.path.exists(self.skel_file):
+					shutil.copy(self.skel_file,self.conf_file)
+					return self.update_default_save_location(f,True)
+				else:
+					return False
 			return False
 		
 		shutil.copy(tmp_file,self.conf_file)
@@ -118,8 +121,9 @@ class LibreofficeParser:
 	def main(self):
 		
 		try:
-			self.check_user_dir()
+			#self.check_user_dir()
 			self.update_default_save_location(self.conf_file)
+				
 		except Exception as e:
 			dprint("[!] Oops, something went wrong: [!]")
 			dprint(e)
