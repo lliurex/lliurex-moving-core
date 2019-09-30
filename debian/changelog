@@ -1,3 +1,10 @@
+lliurex-moving-core (4.5) bionic; urgency=medium
+
+  * using lxml instead. We have to ignore possible unbounded prefixes in xml
+    file
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 30 Sep 2019 14:07:17 +0200
+
 lliurex-moving-core (4.4.2) bionic; urgency=medium
 
   * Removing xbel from ignore list
