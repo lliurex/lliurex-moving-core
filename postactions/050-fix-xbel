@@ -39,29 +39,34 @@ class XBEL_Fixer:
 	
 	def modify_xml(self):
 	
-		
-	
 		if not os.path.exists(self.xml_path):
 			return False
 
+		try:
 
-		tree=ET.parse(self.xml_path)
-		root = tree.getroot()
+			tree=ET.parse(self.xml_path)
+			root = tree.getroot()
 
-		for child in root:
-			if child.tag == "bookmark":
-				t=child.find("title")
-				if t!=None:
-					if t.text == "Desktop":
-						path="file://%s"%self.desktop_dir
-						child.set("href",path)
-					if t.text == "Documents":
-						path="file://%s"%self.documents_dir
-						child.set("href",path)
-		
-		tree.write("test.xml")
+			for child in root:
+				if child.tag == "bookmark":
+					t=child.find("title")
+					if t!=None:
+						if t.text == "Desktop":
+							path="file://%s"%self.desktop_dir
+							child.set("href",path)
+						if t.text == "Documents":
+							path="file://%s"%self.documents_dir
+							child.set("href",path)
+			
+			tree.write(self.xml_path)
+		except Exception as e:
+			print(e)
+			
+	#def modifu_xml
 		
 if __name__=="__main__":
+	
 	x=XBEL_Fixer()
 	x.get_user_dirs()
 	x.modify_xml()
+	
