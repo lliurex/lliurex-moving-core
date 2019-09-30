@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import xml.etree.ElementTree as ET
+from lxml import etree as ET
+#import xml.etree.ElementTree as ET
 import os
 import gettext
 
@@ -43,11 +44,12 @@ class XBEL_Fixer:
 			return False
 
 		try:
-
-			tree=ET.parse(self.xml_path)
+			tmp_parser=ET.XMLParser(recover=True)
+			tree=ET.parse(self.xml_path,tmp_parser)
 			root = tree.getroot()
 
 			for child in root:
+
 				if child.tag == "bookmark":
 					t=child.find("title")
 					if t!=None:
@@ -58,7 +60,7 @@ class XBEL_Fixer:
 							path="file://%s"%self.documents_dir
 							child.set("href",path)
 			
-			tree.write(self.xml_path)
+			tree.write(self.xml_path, encoding="UTF-8",xml_declaration=True)
 		except Exception as e:
 			print(e)
 			
