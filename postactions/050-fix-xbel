@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+
+import xml.etree.ElementTree as ET
+import os
+import gettext
+
+class XBEL_Fixer:
+	
+	def __init__(self):
+		
+		self.home=os.path.expanduser("~")
+		self.xml_path="%s/.local/share/user-places.xbel"%self.home
+		
+	#def __init__
+	
+	
+	def get_user_dirs(self):
+		
+		try:
+			
+			
+			exec(open(self.home+"/.config/user-dirs.dirs").read())
+			documents=locals()["XDG_DOCUMENTS_DIR"].split("/")[1]
+			desktop=locals()["XDG_DESKTOP_DIR"].split("/")[1]
+			
+		except Exception as e:
+
+			user=os.getenv("USER")
+			documents=gettext.gettext("Documents")
+			desktop=gettext.gettext("Documents")
+	
+
+		self.documents_dir=self.home+"/"+documents
+		self.desktop_dir=self.home+"/"+desktop
+		
+		
+	#def get_user_dirs
+		
+	
+	def modify_xml(self):
+	
+		if not os.path.exists(self.xml_path):
+			return False
+
+		try:
+
+			tree=ET.parse(self.xml_path)
+			root = tree.getroot()
+
+			for child in root:
+				if child.tag == "bookmark":
+					t=child.find("title")
+					if t!=None:
+						if t.text == "Desktop":
+							path="file://%s"%self.desktop_dir
+							child.set("href",path)
+						if t.text == "Documents":
+							path="file://%s"%self.documents_dir
+							child.set("href",path)
+			
+			tree.write(self.xml_path)
+		except Exception as e:
+			print(e)
+			
+	#def modifu_xml
+		
+if __name__=="__main__":
+	
+	x=XBEL_Fixer()
+	x.get_user_dirs()
+	x.modify_xml()
+	
