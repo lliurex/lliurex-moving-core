@@ -19,7 +19,6 @@ class XBEL_Fixer:
 		
 		try:
 			
-			
 			exec(open(self.home+"/.config/user-dirs.dirs").read())
 			documents=locals()["XDG_DOCUMENTS_DIR"].split("/")[1]
 			desktop=locals()["XDG_DESKTOP_DIR"].split("/")[1]
@@ -29,14 +28,13 @@ class XBEL_Fixer:
 
 			gettext.textdomain("xdg-user-dirs")
 			documents=gettext.gettext("Documents")
-			desktop=gettext.gettext("Documents")
+			desktop=gettext.gettext("Desktop")
 			downloads=gettext.gettext("Downloads")
 	
 
 		self.documents_dir=self.home+"/"+documents
 		self.desktop_dir=self.home+"/"+desktop
 		self.downloads_dir=self.home+"/"+downloads
-		
 		
 	#def get_user_dirs
 		
@@ -71,6 +69,7 @@ class XBEL_Fixer:
 			print(e)
 			
 	#def modifu_xml
+	
 		
 if __name__=="__main__":
 	
