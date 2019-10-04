@@ -1,3 +1,9 @@
+lliurex-moving-core (4.5.1) bionic; urgency=medium
+
+  * Added downloads dir to xbel fix
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 04 Oct 2019 15:32:22 +0200
+
 lliurex-moving-core (4.5) bionic; urgency=medium
 
   * using lxml instead. We have to ignore possible unbounded prefixes in xml
