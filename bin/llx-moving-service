@@ -2,6 +2,12 @@
 
 
 load_session() {
+
+    if [ "$UID" = "59999" ]; then
+	# Guest user must be ignored
+	exit 0
+    fi
+	
     # currently we are not supporting other desktop environments
     if [ "$XDG_CURRENT_DESKTOP" = "KDE" ]; then
         if [ "$UID" -gt 1041 ]; then
