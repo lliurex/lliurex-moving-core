@@ -2,7 +2,7 @@ Source: lliurex-moving-core
 Section: x11
 Priority: extra
 Maintainer: LliureX Team <lliurex@gva.es>
-Build-Depends: python3-dev, debhelper (>= 10), cdbs, dh-python, python3-all, python3-setuptools
+Build-Depends: python3-dev, debhelper (>= 10), cdbs, dh-python, python3-all, python3-setuptools, python3-n4d-client
 Standards-Version: 4.1.2
 XS-Python-Version: current
 

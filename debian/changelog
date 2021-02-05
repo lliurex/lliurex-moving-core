@@ -1,3 +1,11 @@
+lliurex-moving-core (4.5.4.0) focal; urgency=medium
+
+  * Master tag: 90f40cd956549c7a1f9d08d415b558c6d6b80732
+  * package has been refactored
+  * using new n4d client lib
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Fri, 05 Feb 2021 10:49:21 +0100
+
 lliurex-moving-core (4.5.3) bionic; urgency=medium
 
   * Ignoring guest-user
