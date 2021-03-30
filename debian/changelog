@@ -1,3 +1,9 @@
+lliurex-moving-core (4.6) bionic; urgency=medium
+
+  * adding new firefox profile paths
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 30 Mar 2021 10:17:43 +0200
+
 lliurex-moving-core (4.5.3) bionic; urgency=medium
 
   * Ignoring guest-user
