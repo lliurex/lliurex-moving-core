@@ -1,3 +1,9 @@
+lliurex-moving-core (4.5.7.0) focal; urgency=medium
+
+  * Yet another try
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Tue, 04 May 2021 21:13:04 +0200
+
 lliurex-moving-core (4.5.6.0) focal; urgency=medium
 
   * I still hate python, but I've removed deprecated XB-Python-Version
