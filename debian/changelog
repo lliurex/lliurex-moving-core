@@ -1,3 +1,9 @@
+lliurex-moving-core (4.5.4.1) focal; urgency=medium
+
+  * modified control build-deps
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Tue, 04 May 2021 11:43:33 +0200
+
 lliurex-moving-core (4.5.4.0) focal; urgency=medium
 
   * Master tag: 90f40cd956549c7a1f9d08d415b558c6d6b80732
