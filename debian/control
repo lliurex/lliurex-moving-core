@@ -7,6 +7,6 @@ Standards-Version: 4.1.2
 
 Package: lliurex-moving-core
 Architecture: all
-Depends: python3, rsync, lliurex-desktop-defaults, python3-n4d-client
+Depends: ${python3:Depends}, python3, rsync, lliurex-desktop-defaults, python3-n4d-client
 Description: Lliurex moving profile manager
  LliureX Moving core files
