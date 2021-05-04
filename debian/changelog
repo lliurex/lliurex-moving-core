@@ -1,3 +1,9 @@
+lliurex-moving-core (4.5.8.0) focal; urgency=medium
+
+  * Fixed some refactor bugs
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Tue, 04 May 2021 22:54:15 +0200
+
 lliurex-moving-core (4.5.7.0) focal; urgency=medium
 
   * Yet another try
