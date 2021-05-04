@@ -19,7 +19,7 @@ logging.basicConfig(format='%(levelname)s %(funcName)s %(message)s',
 
 
 class Client:
-    def __init__(self, username, address="https://server:9779"):
+    def __init__(self, address="https://server:9779"):
 
         self.ignore = {
             "/": [".xinputrc"],
