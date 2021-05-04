@@ -34,7 +34,7 @@ def main():
     try:
 
         if (len(sys.argv) < 2):
-            printUsage()
+            print_usage()
         else:
             if (sys.argv[1] == "load"):
                 mp = lliurex.moving.Client()
