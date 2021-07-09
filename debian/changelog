@@ -1,3 +1,9 @@
+lliurex-moving-core (4.5.9.0) focal; urgency=medium
+
+  * Fixed llx-moving-service using old n4d-client
+
+ -- Enrique Medina Gremaldos <quiqueiii@gmail.com>  Fri, 09 Jul 2021 12:28:47 +0200
+
 lliurex-moving-core (4.5.8.0) focal; urgency=medium
 
   * Fixed some refactor bugs
