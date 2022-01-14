@@ -25,7 +25,7 @@ class Client:
             "/": [".xinputrc"],
             ".config": [
                 "/user-dirs.*", "/google-chrome/Singleton*",
-                "/chromium/Singleton*", "/libreoffice/4/.lock", "/pulse"
+                "/chromium/Singleton*", "/libreoffice/4/.lock", "/pulse", "/onedrive"
             ],
             ".mozilla":
             ["/firefox/*.default/storage", "/firefox/*.default/lock"],
