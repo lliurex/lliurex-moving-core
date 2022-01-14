@@ -1,3 +1,9 @@
+lliurex-moving-core (4.6.1) bionic; urgency=medium
+
+  * ignoring onedrive folder for now
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 14 Jan 2022 11:08:28 +0100
+
 lliurex-moving-core (4.6) bionic; urgency=medium
 
   * adding new firefox profile paths
