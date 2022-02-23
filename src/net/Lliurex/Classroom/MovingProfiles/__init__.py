@@ -22,7 +22,7 @@ class MovingProfiles:
 	
 	def __init__(self,login,port=9779):
 	
-		self.ignore={"/":[".xinputrc"],".config":["/user-dirs.*","/google-chrome/Singleton*","/chromium/Singleton*","/libreoffice/4/.lock","/pulse","/onedrive"],".mozilla":["/firefox/*.default/storage","/firefox/*.default/lock","/firefox/*.default-release/storage","/firefox/*.default-release/lock"],".local":["/share/teamviewer*","/share/Trash/*","/share/gvfs-metadata/*","/share/kscreen/*"]}
+		self.ignore={"/":[".xinputrc"],".config":["/user-dirs.*","/google-chrome/*","/chromium/Singleton*","/libreoffice/4/.lock","/pulse","/onedrive"],".mozilla":["/firefox/*.default/storage","/firefox/*.default/lock","/firefox/*.default-release/storage","/firefox/*.default-release/lock"],".local":["/share/teamviewer*","/share/Trash/*","/share/gvfs-metadata/*","/share/kscreen/*"]}
 		
 		self.login=login
 		server_port=str(port)
