@@ -1,3 +1,9 @@
+lliurex-moving-core (4.6.2) bionic; urgency=medium
+
+  * Ignoring all google-chrome configuration
+
+ -- Daniel Duran <daduve@gmail.com>  Wed, 23 Feb 2022 17:09:03 +0100
+
 lliurex-moving-core (4.6.1) bionic; urgency=medium
 
   * ignoring onedrive folder for now
