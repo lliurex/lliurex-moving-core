@@ -24,7 +24,7 @@ class Client:
         self.ignore = {
             "/": [".xinputrc"],
             ".config": [
-                "/user-dirs.*", "/google-chrome/Singleton*",
+                "/user-dirs.*", "/google-chrome/*",
                 "/chromium/Singleton*", "/libreoffice/4/.lock", "/pulse", "/onedrive"
             ],
             ".mozilla":
