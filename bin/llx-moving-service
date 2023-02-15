@@ -3,8 +3,8 @@
 
 load_session() {
 
-    if [ "$UID" = "59999" ]; then
-	# Guest user must be ignored
+    if [ "$UID" -gt "59000" ]; then
+	# Guest user 59999 and alumnat user 69999 must be ignored 
 	exit 0
     fi
 	
