@@ -1,3 +1,9 @@
+lliurex-moving-core (4.5.10) focal; urgency=medium
+
+  * 59000 UIDs and beyond are ignored. Guest user 59999 and alumnat 69999
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 15 Feb 2023 09:32:15 +0100
+
 lliurex-moving-core (4.5.9.3) focal; urgency=medium
 
   * Adding lliurex-onedrive-config to ignore list
