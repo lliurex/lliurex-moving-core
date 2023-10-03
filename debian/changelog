@@ -1,3 +1,9 @@
+lliurex-moving-core (4.5.11) focal; urgency=medium
+
+  * Ignoring .Microsoft in .config 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 03 Oct 2023 09:26:31 +0200
+
 lliurex-moving-core (4.5.10) focal; urgency=medium
 
   * 59000 UIDs and beyond are ignored. Guest user 59999 and alumnat 69999
